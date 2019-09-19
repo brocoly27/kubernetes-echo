@@ -12,6 +12,8 @@ import java.util.concurrent.atomic.AtomicLong;
 @RestController
 public class EchoController {
     private static final String template = "Hello, %s!";
+    private final int MAX_REQUESTS = 5;
+    private int requestCount = 0;
     private final AtomicLong counter = new AtomicLong();
 
     @RequestMapping("/greeting")
@@ -35,5 +37,14 @@ public class EchoController {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @RequestMapping("/")
+    public String health() {
+        if (requestCount == MAX_REQUESTS) {
+            throw new IllegalStateException("This is my error");
+        }
+        requestCount++;
+        return "OK - Request No: " + requestCount;
     }
 }
